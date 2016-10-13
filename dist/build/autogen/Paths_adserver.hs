@@ -17,7 +17,7 @@ version = Version [0,1] []
 bindir, libdir, datadir, libexecdir, sysconfdir :: FilePath
 
 bindir     = "/Users/rayner/.cabal/bin"
-libdir     = "/Users/rayner/.cabal/lib/x86_64-osx-ghc-7.10.3/adserver-0.1-BKRdiGA3NqV0YQ1NQZ785j"
+libdir     = "/Users/rayner/.cabal/lib/x86_64-osx-ghc-7.10.3/adserver-0.1-9ZbgPd1TJEjLoQ7kTbLpeS"
 datadir    = "/Users/rayner/.cabal/share/x86_64-osx-ghc-7.10.3/adserver-0.1"
 libexecdir = "/Users/rayner/.cabal/libexec"
 sysconfdir = "/Users/rayner/.cabal/etc"

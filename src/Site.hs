@@ -19,11 +19,12 @@ import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Auth.Backends.JsonFile
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.Session.Backends.CookieSession
+import           Snap.Snaplet.Session
 import           Snap.Util.FileServe
 import qualified Heist.Interpreted as I
 ------------------------------------------------------------------------------
 import           Application
-
+import           ApiHandlers
 
 ------------------------------------------------------------------------------
 -- | Render login form
@@ -58,6 +59,8 @@ handleNewUser = method GET handleForm <|> method POST handleFormSubmit
     handleForm = render "new_user"
     handleFormSubmit = registerUser "login" "password" >> redirect "/"
 
+handleUserNew :: Handler App (AuthManager App) ()
+handleUserNew = writeLBS "static"
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
@@ -65,17 +68,18 @@ routes :: [(ByteString, Handler App App ())]
 routes = [ ("login",    with auth handleLoginSubmit)
          , ("logout",   with auth handleLogout)
          , ("new_user", with auth handleNewUser)
-         , ("",         serveDirectory "static")
+         , ("api/:channelId",     with auth handleAdRequest)
          ]
 
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
 app :: SnapletInit App App
-app = makeSnaplet "app" "An snaplet example application." Nothing $ do
+app = makeSnaplet "app" "AdServer Snaplet." Nothing $ do
     h <- nestSnaplet "" heist $ heistInit "templates"
+    let sessionExpiresIn = 24*60*60
     s <- nestSnaplet "sess" sess $
-           initCookieSessionManager "site_key.txt" "sess" Nothing (Just 3600)
+           initCookieSessionManager "site_key.txt" "sess" Nothing (Just sessionExpiresIn)
 
     -- NOTE: We're using initJsonFileAuthManager here because it's easy and
     -- doesn't require any kind of database server to run.  In practice,
@@ -85,4 +89,3 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     addRoutes routes
     addAuthSplices h auth
     return $ App h s a
-
