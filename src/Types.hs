@@ -2,9 +2,11 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module Types where
 
+import           Control.Lens hiding (element)
 import qualified Data.Text as T
 import           Data.Aeson
 import           Data.Aeson.Types (typeMismatch)
@@ -15,46 +17,39 @@ import           Text.Read (readMaybe)
 import           GHC.Generics
 
 data Ad = Ad
-  { adId         :: !Integer
-  , adStartDate  :: !DateTime
-  , adEndDate    :: !DateTime
-  , adContent    :: !T.Text
-  , adMaxViews   :: !(Maybe Integer)
-  , adViewsCount :: !Integer
-  , adCountry    :: !(Maybe Integer) }
+  { _adId         :: Integer
+  , _adStartDate  :: DateTime
+  , _adEndDate    :: DateTime
+  , _adContent    :: T.Text
+  , _adMaxViews   :: Maybe Integer
+  , _adViewsCount :: Integer
+  , _adCountry    :: Maybe Country }
 
 data AdLimit = AdLimit
-  { limitId        :: !Integer
-  , limitChannelId :: !Integer
-  , limitAdId      :: !Integer
-  , limitMaxViews  :: !Integer }
+  { _limitAdId      :: Integer
+  , _limitMaxViews  :: Integer }
+  deriving Show
 
 data Channel = Channel
-  { channelId        :: !Integer
-  , channelName      :: !T.Text
-  , channelType      :: !T.Text
-  , channelCountryId :: !Integer }
+  { _channelId        :: Integer
+  , _channelName      :: T.Text
+  , _channelType      :: T.Text
+  , _channelCountry   :: Country
+  , _channelLimits    :: [AdLimit]
+  , _channelInterests :: [Interest] }
 
 data Country = Country
-  { countryId   :: !Integer
-  , countryName :: !T.Text }
+  { _countryName :: T.Text
+  , _countryLanguages :: [Language] }
+  deriving Show
 
-data Language = Language
-  { languageId   :: !Integer
-  , languageName :: !T.Text }
+newtype Language = Language { unLanguage :: T.Text }
+  deriving Show
 
-data CountryLanguage = CountryLanguage
-  { clCountryId  :: !Integer
-  , clLanguageId :: !Integer }
-
-data Interest = Interest
- { interestId   :: !Integer
- , interestName :: !T.Text }
+newtype Interest = Interest { unInterest :: T.Text }
   deriving (Show, Generic)
 
-data ChannelInterest = ChannelInterest
-  { ciChannelId  :: !Integer
-  , ciInterestId :: !Interest }
+instance ToJSON Interest
 
 --------------------------------------------------------------------------------
 data AdRequest = AdRequest
@@ -64,3 +59,10 @@ data AdRequest = AdRequest
   , reqLanguage  :: !(Maybe T.Text)
   , reqInterests :: ![Interest]
   } deriving(Show, Generic)
+
+instance ToJSON AdRequest
+
+makeLenses ''Ad
+makeLenses ''Channel
+makeLenses ''Country
+makeLenses ''AdLimit

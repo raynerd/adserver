@@ -19,4 +19,6 @@ cabal.config
 *.hp
 *.log
 .DS_Store
-
+dist/
+log/
+*.cabal-components

@@ -52,3 +52,8 @@
 127.0.0.1 - - [12/Oct/2016:22:09:41 -0500] "GET /test/ HTTP/1.1" 404 203 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
 127.0.0.1 - - [12/Oct/2016:22:11:40 -0500] "GET /test HTTP/1.1" 200 19 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
 127.0.0.1 - - [12/Oct/2016:22:59:26 -0500] "GET /test HTTP/1.1" 200 28 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
+127.0.0.1 - - [13/Oct/2016:19:34:55 -0500] "GET /api/345 HTTP/1.1" 200 28 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
+127.0.0.1 - - [13/Oct/2016:19:38:11 -0500] "GET /api/345?ad-id=123 HTTP/1.1" 200 28 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
+127.0.0.1 - - [13/Oct/2016:22:25:45 -0500] "GET /api/345?ad-id=123 HTTP/1.1" 200 102 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
+127.0.0.1 - - [13/Oct/2016:22:27:38 -0500] "GET /api/345?ad-id=123 HTTP/1.1" 200 102 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
+127.0.0.1 - - [13/Oct/2016:22:27:45 -0500] "GET /api/345?ad-id= HTTP/1.1" 400 5 - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0"
