@@ -4,13 +4,18 @@
 
 module FakeData where
 
--- import           Control.Lens
+------------------------------------------------------------------------------
 import           Data.DateTime
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid ((<>))
 import qualified Data.Text as T
 ------------------------------------------------------------------------------
 import Types
+
+-- Here we have the mock data we need for the application, we could have used
+-- real data on a database but it would require more steps on deployment.
+-- Also we could use the State Monad to update the view count but it can add
+-- more complexity for just a testing data.
 
 -- | Testing languages
 german = Language "German"

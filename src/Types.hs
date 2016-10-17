@@ -6,16 +6,15 @@
 
 module Types where
 
--- import           Control.Lens hiding (element)
+------------------------------------------------------------------------------
 import qualified Data.Text as T
 import           Data.Aeson
-import           Data.Aeson.Types (typeMismatch)
-import           Data.Time.Calendar
-import           Data.Maybe (fromMaybe)
 import           Data.DateTime
-import           Text.Read (readMaybe)
 import           GHC.Generics
+------------------------------------------------------------------------------
 
+-- | Due we are sending a JSON as answer we need to encode this type and the
+-- simplest way is to deriving from Generic and instance ToJSON
 data Ad = Ad
   { adId         :: Integer
   , adInterest   :: Interest
@@ -41,6 +40,8 @@ data Channel = Channel
   , channelLimits    :: [AdLimit]
   , channelInterests :: [Interest] }
 
+-- | By using newtypes to wrap data members we avoid confussion at
+-- development time
 newtype ChannelType = ChannelType { unChannelType :: T.Text }
   deriving Show
 
@@ -73,7 +74,3 @@ instance ToJSON Language where
 
 instance ToJSON Interest where
   toJSON = String . unInterest
--- makeLenses ''Ad
--- makeLenses ''Channel
--- makeLenses ''Country
--- makeLenses ''AdLimit

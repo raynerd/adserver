@@ -29,7 +29,6 @@ function updateUrl() {
   var nonEmpty = _.reject(urlParameters, function(parameter) {
         return parameter === "";
   });
-  console.log(nonEmpty.join("&"));
   fullUrl = fullUrl.concat(nonEmpty.join("&"))
   $('#url-input').prop('value', fullUrl);
 }
@@ -60,7 +59,6 @@ function getAd() {
          })
      .done(function(response) {
        renderResponse(response);
-      //  responseArea.prop('value', JSON.stringify(response));
      })
      .fail(function(msg) {
        responseArea.prop('value',  "Error: " + msg);

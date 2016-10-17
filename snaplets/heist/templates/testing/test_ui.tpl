@@ -48,7 +48,6 @@
     <input id="request-btn" type="button" value="Request"/>
   </div>
   <div>
-    <!-- <textarea id="response" cols="80" rows="5"></textarea> -->
     <table>
       <tr>
         <td>Ad Id:</td>

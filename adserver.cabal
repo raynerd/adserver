@@ -65,3 +65,10 @@ Executable adserver
     else
       ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
                    -fno-warn-orphans
+  other-modules:
+    ApiHandlers
+    Application
+    FakeData
+    Site
+    TestingHandlers
+    Types

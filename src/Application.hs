@@ -19,6 +19,7 @@ data App = App
     , _auth :: Snaplet (AuthManager App)
     }
 
+-- | This expose through lenses the data types nested inside our App Monad
 makeLenses ''App
 
 instance HasHeist App where
@@ -27,5 +28,3 @@ instance HasHeist App where
 
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
-
-

@@ -1,80 +1,31 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-------------------------------------------------------------------------------
--- | This module is where all the routes and handlers are defined for your
--- site. The 'app' function is the initializer that combines everything
--- together and is exported by this module.
 module Site
   ( app
   ) where
 
 ------------------------------------------------------------------------------
-import           Control.Applicative
 import           Data.ByteString (ByteString)
-import           Data.Map.Syntax ((##))
-import qualified Data.Text as T
-import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth
 import           Snap.Snaplet.Auth.Backends.JsonFile
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.Session.Backends.CookieSession
-import           Snap.Snaplet.Session
 import           Snap.Util.FileServe
-import qualified Heist.Interpreted as I
 ------------------------------------------------------------------------------
 import           Application
 import           ApiHandlers
 import           TestingHandlers
 ------------------------------------------------------------------------------
--- | Render login form
-handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
-handleLogin authError = heistLocal (I.bindSplices errs) $ render "login"
-  where
-    errs = maybe mempty splice authError
-    splice err = "loginError" ## I.textSplice err
 
-
-------------------------------------------------------------------------------
--- | Handle login submit
-handleLoginSubmit :: Handler App (AuthManager App) ()
-handleLoginSubmit =
-    loginUser "login" "password" Nothing
-              (\_ -> handleLogin err) (redirect "/")
-  where
-    err = Just "Unknown user or password"
-
-
-------------------------------------------------------------------------------
--- | Logs out and redirects the user to the site index.
-handleLogout :: Handler App (AuthManager App) ()
-handleLogout = logout >> redirect "/"
-
-
-------------------------------------------------------------------------------
--- | Handle new user form submit
-handleNewUser :: Handler App (AuthManager App) ()
-handleNewUser = method GET handleForm <|> method POST handleFormSubmit
-  where
-    handleForm = render "new_user"
-    handleFormSubmit = registerUser "login" "password" >> redirect "/"
-
-handleUserNew :: Handler App (AuthManager App) ()
-handleUserNew = writeLBS "static"
-
-------------------------------------------------------------------------------
--- | The application's routes.
+-- | The application's routes. Here we are listing 3 main routes for the
+-- application, the first one handles the API response, the second one for
+-- the testing page and the last one for needed resources.
 routes :: [(ByteString, Handler App App ())]
-routes = [ ("login",          with auth handleLoginSubmit)
-         , ("logout",         with auth handleLogout)
-         , ("new_user",       with auth handleNewUser)
-         , ("api/:channelId", with auth handleAdRequest)
+routes = [ ("api/:channelId", with auth handleAdRequest)
          , ("testing",        with auth handleTesting)
-         , ("/static/",       serveDirectory "static")
-         ]
+         , ("/static/",       serveDirectory "static") ]
 
-
-------------------------------------------------------------------------------
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "app" "AdServer Snaplet." Nothing $ do
@@ -82,10 +33,6 @@ app = makeSnaplet "app" "AdServer Snaplet." Nothing $ do
     let sessionExpiresIn = 24*60*60
     s <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" Nothing (Just sessionExpiresIn)
-
-    -- NOTE: We're using initJsonFileAuthManager here because it's easy and
-    -- doesn't require any kind of database server to run.  In practice,
-    -- you'll probably want to change this to a more robust auth backend.
     a <- nestSnaplet "auth" auth $
            initJsonFileAuthManager defAuthSettings sess "users.json"
     addRoutes routes
