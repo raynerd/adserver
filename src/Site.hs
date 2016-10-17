@@ -25,7 +25,7 @@ import qualified Heist.Interpreted as I
 ------------------------------------------------------------------------------
 import           Application
 import           ApiHandlers
-
+import           TestingHandlers
 ------------------------------------------------------------------------------
 -- | Render login form
 handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
@@ -65,10 +65,12 @@ handleUserNew = writeLBS "static"
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ ("login",    with auth handleLoginSubmit)
-         , ("logout",   with auth handleLogout)
-         , ("new_user", with auth handleNewUser)
-         , ("api/:channelId",     with auth handleAdRequest)
+routes = [ ("login",          with auth handleLoginSubmit)
+         , ("logout",         with auth handleLogout)
+         , ("new_user",       with auth handleNewUser)
+         , ("api/:channelId", with auth handleAdRequest)
+         , ("testing",        with auth handleTesting)
+         , ("/static/",       serveDirectory "static")
          ]
 
 

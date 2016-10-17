@@ -6,7 +6,7 @@
 
 module Types where
 
-import           Control.Lens hiding (element)
+-- import           Control.Lens hiding (element)
 import qualified Data.Text as T
 import           Data.Aeson
 import           Data.Aeson.Types (typeMismatch)
@@ -17,52 +17,63 @@ import           Text.Read (readMaybe)
 import           GHC.Generics
 
 data Ad = Ad
-  { _adId         :: Integer
-  , _adStartDate  :: DateTime
-  , _adEndDate    :: DateTime
-  , _adContent    :: T.Text
-  , _adMaxViews   :: Maybe Integer
-  , _adViewsCount :: Integer
-  , _adCountry    :: Maybe Country }
+  { adId         :: Integer
+  , adInterest   :: Interest
+  , adStartDate  :: DateTime
+  , adEndDate    :: DateTime
+  , adContent    :: T.Text
+  , adMaxViews   :: Maybe Integer
+  , adViewsCount :: Integer
+  , adCountry    :: Maybe Country
+  , adLanguage   :: Language }
+  deriving (Generic, Show)
 
 data AdLimit = AdLimit
-  { _limitAdId      :: Integer
-  , _limitMaxViews  :: Integer }
+  { limitAdId      :: Integer
+  , limitMaxViews  :: Integer }
   deriving Show
 
 data Channel = Channel
-  { _channelId        :: Integer
-  , _channelName      :: T.Text
-  , _channelType      :: T.Text
-  , _channelCountry   :: Country
-  , _channelLimits    :: [AdLimit]
-  , _channelInterests :: [Interest] }
+  { channelId        :: Integer
+  , channelName      :: T.Text
+  , channelType      :: ChannelType
+  , channelCountry   :: Country
+  , channelLimits    :: [AdLimit]
+  , channelInterests :: [Interest] }
+
+newtype ChannelType = ChannelType { unChannelType :: T.Text }
+  deriving Show
 
 data Country = Country
-  { _countryName :: T.Text
-  , _countryLanguages :: [Language] }
-  deriving Show
+  { countryName :: T.Text
+  , countryLanguages :: [Language] }
+  deriving (Generic, Show)
 
 newtype Language = Language { unLanguage :: T.Text }
-  deriving Show
+  deriving (Eq, Show)
 
 newtype Interest = Interest { unInterest :: T.Text }
-  deriving (Show, Generic)
-
-instance ToJSON Interest
+  deriving (Eq, Show)
 
 --------------------------------------------------------------------------------
 data AdRequest = AdRequest
-  { reqChannelId :: !Integer
-  , reqAdId      :: !(Maybe Integer)
-  , reqCountry   :: !(Maybe T.Text)
-  , reqLanguage  :: !(Maybe T.Text)
-  , reqInterests :: ![Interest]
+  { reqChannelId   :: !Integer
+  , reqAdId        :: !(Maybe Integer)
+  , reqCountryName :: !(Maybe T.Text)
+  , reqLanguage    :: !(Maybe Language)
+  , reqInterests   :: ![Interest]
   } deriving(Show, Generic)
 
-instance ToJSON AdRequest
+instance ToJSON Ad
 
-makeLenses ''Ad
-makeLenses ''Channel
-makeLenses ''Country
-makeLenses ''AdLimit
+instance ToJSON Country
+
+instance ToJSON Language where
+  toJSON (Language language) = String language
+
+instance ToJSON Interest where
+  toJSON = String . unInterest
+-- makeLenses ''Ad
+-- makeLenses ''Channel
+-- makeLenses ''Country
+-- makeLenses ''AdLimit
