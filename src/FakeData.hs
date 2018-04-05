@@ -29,7 +29,7 @@ languages = [german, english, french, spanish]
 germany = Country "Germany" [german]
 canada =  Country "Canada"  [english, french]
 usa    =  Country "USA"     [english]
-mexico =  Country "Spanish" [spanish]
+mexico =  Country "Mexico"  [spanish]
 
 countries = [germany, canada, usa, mexico]
 
